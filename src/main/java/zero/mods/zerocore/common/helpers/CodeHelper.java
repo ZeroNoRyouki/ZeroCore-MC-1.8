@@ -3,6 +3,8 @@ package zero.mods.zerocore.common.helpers;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 /**
  * Created by marco on 27/06/2015.
  */
@@ -30,5 +32,15 @@ public class CodeHelper {
         return ((World)world).isRemote;
     }
 
+    /**
+     * Retrieve the world random numbers generator from an IBlockAccess
+     * In case of failure, a new Random object is retrived
+     *
+     * @param world the IBlockAccess for the world
+     */
+    public static Random getRNGFromWorld(IBlockAccess world) {
+
+        return world instanceof World ? ((World)world).rand : new Random();
+    }
 
 }

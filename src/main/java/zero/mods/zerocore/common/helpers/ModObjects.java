@@ -1,11 +1,7 @@
 package zero.mods.zerocore.common.helpers;
 
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-
-import java.util.Random;
 
 /**
  * A collection of helper function for handling mod objects
@@ -35,17 +31,6 @@ public final class ModObjects {
         int index = (null == fullyQualifiedName) || fullyQualifiedName.isEmpty() ? -1 : fullyQualifiedName.indexOf(ModObjects.FQN_SEPARATOR);
 
         return (-1 == index) ? fullyQualifiedName : fullyQualifiedName.substring(index + 1);
-    }
-
-    /**
-     * Retrieve the world random numbers generator from an IBlockAccess
-     * In case of failure, a new Random object is retrived
-     *
-     * @param world the IBlockAccess for the world
-     */
-    public static Random GetRNGFromWorld(IBlockAccess world) {
-
-        return world instanceof World ? ((World)world).rand : new Random();
     }
 
     /**
