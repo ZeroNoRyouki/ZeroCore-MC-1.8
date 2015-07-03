@@ -1,8 +1,6 @@
 package zero.mods.zerocore.internal;
 
-/**
- * Created by marco on 12/04/2015.
- */
+
 class References {
 
     public final static String MOD_ID = "zerocore";

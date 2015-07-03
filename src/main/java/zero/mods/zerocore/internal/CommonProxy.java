@@ -5,9 +5,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import zero.mods.zerocore.common.ISidedProxy;
 
-/**
- * Created by marco on 23/05/2015.
- */
 public class CommonProxy implements ISidedProxy {
 
     @Override

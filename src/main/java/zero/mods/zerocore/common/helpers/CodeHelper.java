@@ -5,9 +5,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by marco on 27/06/2015.
- */
 public class CodeHelper {
 
     /**

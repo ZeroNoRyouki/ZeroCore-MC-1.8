@@ -18,9 +18,7 @@ import net.minecraftforge.fml.common.FMLLog;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by marco on 27/06/2015.
- */
+
 public class WorldGenMinableOres extends WorldGenerator {
 
     public void addOre(Block ore, int minY, int maxY, int minBlockCount, int maxBlockCount, int chance, Block blockToReplace) {

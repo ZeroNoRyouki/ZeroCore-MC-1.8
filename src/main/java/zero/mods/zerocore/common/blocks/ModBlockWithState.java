@@ -15,7 +15,7 @@ import zero.mods.zerocore.common.items.ModItemBlock;
 import java.util.Map;
 
 /**
- * Created by marco on 28/05/2015.
+ * A block with multiple states
  */
 public abstract class ModBlockWithState extends ModBlock implements IBlockStateAware {
 
