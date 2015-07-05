@@ -12,12 +12,16 @@ import zero.mods.zerocore.common.ISidedProxy;
 @Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = References.MOD_VERSION, dependencies = References.MOD_DEPENDENCIES)
 public class ZeroCoreMod implements IModInstance {
 
-    /*
-    public ZeroCoreMod getInstance() {
+    public static ZeroCoreMod getInstance() {
 
         return ZeroCoreMod.s_instance;
     }
-    */
+
+    @Override
+    public String getModId() {
+
+        return References.MOD_ID;
+    }
 
     @Override
     public ISidedProxy getProxy() {
