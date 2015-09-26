@@ -14,7 +14,6 @@ public interface IModBlock {
      * register the model for rendering an item in an inventory
      * Call this method while handling the FMLInitializationEvent event in your client proxy
      */
-
     @SideOnly(Side.CLIENT)
     void registerModels();
 }

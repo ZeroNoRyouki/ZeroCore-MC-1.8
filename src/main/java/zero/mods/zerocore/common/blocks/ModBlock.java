@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
@@ -27,7 +28,7 @@ public abstract class ModBlock extends Block implements IModBlock {
      */
     protected ModBlock(String name, Material material) {
 
-        this(name, material, ItemBlock.class);
+        this(name, material, ItemBlock.class, new Object[]{});
     }
 
     /**
@@ -39,6 +40,19 @@ public abstract class ModBlock extends Block implements IModBlock {
      */
     protected ModBlock(String name, Material material, Class<? extends ItemBlock> itemClass) {
 
+        this(name, material, itemClass, new Object[]{});
+    }
+
+    /**
+     * Constructor
+     *
+     * @param name The mod-unique name of the block
+     * @param material The base material for the block
+     * @param itemClass The associated item type. If null, no item will be associated
+     * @param itemCtorArgs Arguments to pass (after the required {@code Block} parameter) to the ItemBlock constructor
+     */
+    protected ModBlock(String name, Material material, Class<? extends ItemBlock> itemClass, Object... itemCtorArgs) {
+
         super(material);
 
         this._fqName = ModObjects.formatFullyQualifiedName(ModObjects.getModIdFromActiveModContainer(), name);
@@ -46,7 +60,7 @@ public abstract class ModBlock extends Block implements IModBlock {
 
         // init the block BEFORE registering it
         this.initBlock();
-        this.register(name, itemClass);
+        this.register(name, itemClass, itemCtorArgs);
     }
 
     /**
@@ -67,6 +81,17 @@ public abstract class ModBlock extends Block implements IModBlock {
 
         Render.registerItemModel(this);
     }
+
+    /**
+     * Register a tile entity for the block
+     *
+     * @param tileEntityClass the tile entity class to register
+     */
+    public void registerBlockTileEntity(Class<? extends TileEntity> tileEntityClass) {
+
+        GameRegistry.registerTileEntity(tileEntityClass, this.getFullyQualifiedName() + ".te");
+    }
+
 
     /**
      * Test if a block in the world is of the given type
@@ -129,11 +154,11 @@ public abstract class ModBlock extends Block implements IModBlock {
     protected abstract void initBlock();
 
     /**
-     * register the block in the GameRegistry. Called at construction time
+     * Register the block in the GameRegistry. Called at construction time
      */
-    protected void register(String name, Class<? extends ItemBlock> itemClass) {
+    protected void register(String name, Class<? extends ItemBlock> itemClass, Object... itemCtorArgs) {
 
-        GameRegistry.registerBlock(this, itemClass, name);
+        GameRegistry.registerBlock(this, itemClass, name, itemCtorArgs);
     }
 
 

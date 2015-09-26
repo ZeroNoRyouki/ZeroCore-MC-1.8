@@ -3,9 +3,13 @@ package zero.mods.zerocore.common.blocks;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import zero.mods.zerocore.client.helpers.Render;
@@ -19,14 +23,14 @@ import java.util.Map;
  */
 public abstract class ModBlockWithState extends ModBlock implements IBlockStateAware {
 
-    public ModBlockWithState(String name, Material material) {
+    public ModBlockWithState(String name, Material material, boolean hasSubTypes) {
 
-        this(name, material, ItemBlockWithState.class);
+        this(name, material, hasSubTypes, ItemBlockWithState.class);
     }
 
-    public ModBlockWithState(String name, Material material, Class<? extends ItemBlockWithState> itemClass) {
+    public ModBlockWithState(String name, Material material, boolean hasSubTypes, Class<? extends ItemBlockWithState> itemClass) {
 
-        super(name, material, itemClass);
+        super(name, material, itemClass, Boolean.valueOf(hasSubTypes));
     }
 
     @Override
@@ -50,8 +54,11 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
 
         this.getSubBlocksNamesMap(map);
 
-        if (map.isEmpty())
+        if (map.isEmpty()) {
+
+            super.registerModels();
             return;
+        }
 
 
         Item item = Item.getItemFromBlock(this);
@@ -78,6 +85,26 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
         map.clear();
     }
 
+
+    /**
+     * Return the suggested facing for a indirectly block placed in the world (by World.setBlockState for example)
+     *
+     * @param world the current world
+     * @param position position of the block
+     * @param currentFacing the current facing
+     * @return the new facing for the block based on the surrounding blocks
+     */
+    protected EnumFacing suggestDefaultFacing(World world, BlockPos position, EnumFacing currentFacing) {
+
+        EnumFacing oppositeFacing = currentFacing.getOpposite();
+        Block facingBlock = world.getBlockState(position.offset(currentFacing)).getBlock();
+        Block oppositeBlock = world.getBlockState(position.offset(oppositeFacing)).getBlock();
+
+        return facingBlock.isFullBlock() && !oppositeBlock.isFullBlock() ? oppositeFacing : currentFacing;
+    }
+
+
+
     /**
      * Get the meta-data / models names map for all the sub-blocks of this block
      * Called during models registration by {@code registerModels}
@@ -96,12 +123,18 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
 
     protected static class ItemBlockWithState extends ModItemBlock {
 
-        public ItemBlockWithState(Block block) {
+        public ItemBlockWithState(Block block, Boolean hasSubTypes) {
 
             super(block);
 
             if (!(block instanceof ModBlockWithState))
                 throw new IllegalArgumentException("The block must be a subclass of ModBlockWithState");
+
+            if (hasSubTypes) {
+
+                this.setHasSubtypes(true);
+                this.setMaxDamage(0);
+            }
         }
 
         @Override
@@ -111,7 +144,10 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
         @Override
         public String getUnlocalizedName(ItemStack stack) {
 
-            return super.getUnlocalizedName(stack) + "_" + ((IBlockStateAware)this.block).getBlockNameStateSuffix(stack);
+            String baseName = super.getUnlocalizedName(stack);
+            String stateSuffix = ((IBlockStateAware)this.block).getBlockNameStateSuffix(stack);
+
+            return (null != stateSuffix) && !stateSuffix.isEmpty() ? baseName + "_" + stateSuffix : baseName;
         }
 
         /**
