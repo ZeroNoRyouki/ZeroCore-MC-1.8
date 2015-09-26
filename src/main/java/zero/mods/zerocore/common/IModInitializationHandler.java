@@ -35,6 +35,9 @@ public interface IModInitializationHandler {
     /**
      * Handle the mod post-initialization event
      *
+     * Common tasks:
+     *  - register potions
+     *
      * @param event the event data
      */
     void onPostInit(FMLPostInitializationEvent event);
