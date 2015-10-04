@@ -1,10 +1,6 @@
 package zero.mods.zerocore.common.helpers;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -13,29 +9,126 @@ import net.minecraftforge.fml.common.ModContainer;
  */
 public final class ModObjects {
 
-    public static final char FQN_SEPARATOR = ':';
+    public static final char FQN_SEPARATOR_NAME = ':';
+    public static final char FQN_SEPARATOR_META = '_';
+    public static final char FQN_SEPARATOR_SUFFIX = '.';
 
     /**
      * Format the fully qualified name for an object
      *
-     * @param modId The ID of the mod that own the object
+     * @param modId The ID of the mod that own the object. If null or an empty string, the ID from the active mod container will be used instead (see {@see getModIdFromActiveModContainer}
      * @param objectName The mod-unique name of the object
      */
     public static String formatFullyQualifiedName(String modId, String objectName) {
 
-        return modId + ModObjects.FQN_SEPARATOR + objectName;
+        if ((null == modId) || modId.isEmpty())
+            modId = ModObjects.getModIdFromActiveModContainer();
+
+        if ((null == objectName) || objectName.isEmpty())
+            throw new IllegalArgumentException("Invalid object name");
+
+
+        StringBuilder sb = new StringBuilder(modId.length() + 1 + objectName.length());
+
+        sb.append(modId);
+        sb.append(ModObjects.FQN_SEPARATOR_NAME);
+        sb.append(objectName);
+
+        return sb.toString();
     }
 
     /**
-     * Return the object name from it's fully qualified name
+     * Format the fully qualified name for a sub-object
      *
-     * @param fullyQualifiedName The ID of the mod that own the object
+     * @param modId The ID of the mod that own the object. If null or an empty string, the ID from the active mod container will be used instead (see {@see getModIdFromActiveModContainer}
+     * @param objectName The mod-unique name of the object
+     * @param metaData The meta data value for the sub object. Values lower than zero are invalid
+     * @param suffix An optional suffix
+     */
+    public static String formatSubOjectFullyQualifiedName(String modId, String objectName, int metaData, String suffix) {
+
+        if ((null == modId) || modId.isEmpty())
+            modId = ModObjects.getModIdFromActiveModContainer();
+
+        if (metaData < 0)
+            throw new IllegalArgumentException("Invalid meta data value");
+
+        if ((null == objectName) || objectName.isEmpty())
+            throw new IllegalArgumentException("Invalid object name");
+
+
+        boolean useSuffix = (null != suffix) && !suffix.isEmpty();
+        int length = modId.length() + 1 + objectName.length() + 6 + (useSuffix ? suffix.length() + 1 : 0);
+        StringBuilder sb = new StringBuilder(length);
+
+        sb.append(modId);
+        sb.append(ModObjects.FQN_SEPARATOR_NAME);
+        sb.append(objectName);
+        sb.append(ModObjects.FQN_SEPARATOR_META);
+        sb.append(metaData);
+
+        if (useSuffix) {
+
+            sb.append(ModObjects.FQN_SEPARATOR_SUFFIX);
+            sb.append(suffix);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Format the fully qualified name for a sub-object
+     *
+     * @param objectFullyQualifiedName The main object fully qualified name
+     * @param metaData The meta data value for the sub object. Values lower than zero are invalid
+     * @param suffix An optional suffix for the sub object
+     */
+    public static String formatSubOjectFullyQualifiedName(String objectFullyQualifiedName, int metaData, String suffix) {
+
+        if ((null == objectFullyQualifiedName) || objectFullyQualifiedName.isEmpty())
+            throw new IllegalArgumentException("Invalid object name");
+
+        if (metaData < 0)
+            throw new IllegalArgumentException("Invalid meta data value");
+
+        boolean useSuffix = (null != suffix) && !suffix.isEmpty();
+        int length = objectFullyQualifiedName.length() + 6 + (useSuffix ? suffix.length() + 1 : 0);
+        StringBuilder sb = new StringBuilder(length);
+
+        sb.append(objectFullyQualifiedName);
+        sb.append(ModObjects.FQN_SEPARATOR_META);
+        sb.append(metaData);
+
+        if (useSuffix) {
+
+            sb.append(ModObjects.FQN_SEPARATOR_SUFFIX);
+            sb.append(suffix);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Return the object name from it's fully qualified name or from a sub-object fully qualified name
+     *
+     * @param fullyQualifiedName The fully qualified name of the object or sub-object
      */
     public static String getNameFromFullyQualifiedName(String fullyQualifiedName) {
 
-        int index = (null == fullyQualifiedName) || fullyQualifiedName.isEmpty() ? -1 : fullyQualifiedName.indexOf(ModObjects.FQN_SEPARATOR);
+        if ((null == fullyQualifiedName) || fullyQualifiedName.isEmpty())
+            throw new IllegalArgumentException("Invalid object name");
 
-        return (-1 == index) ? fullyQualifiedName : fullyQualifiedName.substring(index + 1);
+        int indexNameSeparator = fullyQualifiedName.indexOf(ModObjects.FQN_SEPARATOR_NAME);
+        int indexMetaSeparator = fullyQualifiedName.indexOf(ModObjects.FQN_SEPARATOR_META, indexNameSeparator);
+
+        if (indexNameSeparator < 0)
+            throw new IllegalArgumentException("Invalid object name");
+
+        ++indexNameSeparator;
+
+        return indexMetaSeparator > indexNameSeparator ?
+                fullyQualifiedName.substring(indexNameSeparator, indexMetaSeparator - indexNameSeparator) :
+                fullyQualifiedName.substring(indexNameSeparator);
     }
 
     /**
@@ -47,7 +140,7 @@ public final class ModObjects {
         ModContainer mc = Loader.instance().activeModContainer();
         String modId = null != mc ? mc.getModId() : null;
 
-        if (null == modId)
+        if ((null == modId) || modId.isEmpty())
             throw new RuntimeException("Cannot retrieve the MOD ID from FML");
 
         return modId;
