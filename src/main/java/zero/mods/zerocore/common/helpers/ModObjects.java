@@ -42,30 +42,37 @@ public final class ModObjects {
      *
      * @param modId The ID of the mod that own the object. If null or an empty string, the ID from the active mod container will be used instead (see {@see getModIdFromActiveModContainer}
      * @param objectName The mod-unique name of the object
-     * @param metaData The meta data value for the sub object. Values lower than zero are invalid
-     * @param suffix An optional suffix
+     * @param metaData An optional meta data value for the sub object, values lower than zero are ignored. You must supply a meta data value and/ore a suffix value
+     * @param suffix An optional suffix. You must supply a meta data value and/ore a suffix value
      */
     public static String formatSubOjectFullyQualifiedName(String modId, String objectName, int metaData, String suffix) {
 
         if ((null == modId) || modId.isEmpty())
             modId = ModObjects.getModIdFromActiveModContainer();
 
-        if (metaData < 0)
-            throw new IllegalArgumentException("Invalid meta data value");
-
         if ((null == objectName) || objectName.isEmpty())
             throw new IllegalArgumentException("Invalid object name");
 
 
+        boolean useMetadata = metaData >= 0;
         boolean useSuffix = (null != suffix) && !suffix.isEmpty();
-        int length = modId.length() + 1 + objectName.length() + 6 + (useSuffix ? suffix.length() + 1 : 0);
+
+        if (!useMetadata && !useSuffix)
+            throw new IllegalArgumentException("You must supply a meta data value and/or a suffix");
+
+
+        int length = modId.length() + 1 + objectName.length() + (useMetadata ? 6 : 0) + (useSuffix ? suffix.length() + 1 : 0);
         StringBuilder sb = new StringBuilder(length);
 
         sb.append(modId);
         sb.append(ModObjects.FQN_SEPARATOR_NAME);
         sb.append(objectName);
-        sb.append(ModObjects.FQN_SEPARATOR_META);
-        sb.append(metaData);
+
+        if (useMetadata) {
+
+            sb.append(ModObjects.FQN_SEPARATOR_META);
+            sb.append(metaData);
+        }
 
         if (useSuffix) {
 
@@ -80,8 +87,8 @@ public final class ModObjects {
      * Format the fully qualified name for a sub-object
      *
      * @param objectFullyQualifiedName The main object fully qualified name
-     * @param metaData The meta data value for the sub object. Values lower than zero are invalid
-     * @param suffix An optional suffix for the sub object
+     * @param metaData An optional meta data value for the sub object, values lower than zero are ignored. You must supply a meta data value and/ore a suffix value
+     * @param suffix An optional suffix. You must supply a meta data value and/ore a suffix value
      */
     public static String formatSubOjectFullyQualifiedName(String objectFullyQualifiedName, int metaData, String suffix) {
 
@@ -91,13 +98,23 @@ public final class ModObjects {
         if (metaData < 0)
             throw new IllegalArgumentException("Invalid meta data value");
 
+        boolean useMetadata = metaData >= 0;
         boolean useSuffix = (null != suffix) && !suffix.isEmpty();
-        int length = objectFullyQualifiedName.length() + 6 + (useSuffix ? suffix.length() + 1 : 0);
+
+        if (!useMetadata && !useSuffix)
+            throw new IllegalArgumentException("You must supply a meta data value and/or a suffix");
+
+
+        int length = objectFullyQualifiedName.length() + (useMetadata ? 6 : 0) + (useSuffix ? suffix.length() + 1 : 0);
         StringBuilder sb = new StringBuilder(length);
 
         sb.append(objectFullyQualifiedName);
-        sb.append(ModObjects.FQN_SEPARATOR_META);
-        sb.append(metaData);
+
+        if (useMetadata) {
+
+            sb.append(ModObjects.FQN_SEPARATOR_META);
+            sb.append(metaData);
+        }
 
         if (useSuffix) {
 
