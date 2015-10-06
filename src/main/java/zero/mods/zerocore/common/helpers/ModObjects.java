@@ -95,9 +95,6 @@ public final class ModObjects {
         if ((null == objectFullyQualifiedName) || objectFullyQualifiedName.isEmpty())
             throw new IllegalArgumentException("Invalid object name");
 
-        if (metaData < 0)
-            throw new IllegalArgumentException("Invalid meta data value");
-
         boolean useMetadata = metaData >= 0;
         boolean useSuffix = (null != suffix) && !suffix.isEmpty();
 
@@ -146,6 +143,12 @@ public final class ModObjects {
         return indexMetaSeparator > indexNameSeparator ?
                 fullyQualifiedName.substring(indexNameSeparator, indexMetaSeparator - indexNameSeparator) :
                 fullyQualifiedName.substring(indexNameSeparator);
+    }
+
+
+    public static boolean isFullyQualifiedName(String name) {
+
+        return (null != name) && !name.isEmpty() && name.indexOf(ModObjects.FQN_SEPARATOR_NAME) > 0;
     }
 
     /**
