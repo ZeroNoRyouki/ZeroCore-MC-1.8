@@ -4,11 +4,38 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import zero.mods.zerocore.common.IModAccessor;
+import zero.mods.zerocore.common.helpers.ModObjects;
 
 /**
  * A base class for all the tile entities of a mod
  */
 public abstract class ModTileEntity extends TileEntity implements IModAccessor {
+
+    public static final String FQN_TILEENTITY_SUFFIX = ".te";
+
+    /**
+     * Format the fully qualified name for a sub-object
+     *
+     * @param blockFullyQualifiedName The fully qualified name of the object associated to this tile entity
+     */
+    public static String formatFullyQualifiedName(String blockFullyQualifiedName) {
+
+        return ModObjects.formatSubOjectFullyQualifiedName(blockFullyQualifiedName, -1, ModTileEntity.FQN_TILEENTITY_SUFFIX);
+    }
+
+    /**
+     * Format the fully qualified name for a sub-object
+     *
+     * @param blockFullyQualifiedName The fully qualified name of the object associated to this tile entity
+     * @param metaData The meta data value for this tile entity. Values lower than zero are invalid
+     */
+    public static String formatFullyQualifiedName(String blockFullyQualifiedName, int metaData) {
+
+        if (metaData < 0)
+            throw new IllegalArgumentException("Invalid meta data value");
+
+        return ModObjects.formatSubOjectFullyQualifiedName(blockFullyQualifiedName, metaData, ModTileEntity.FQN_TILEENTITY_SUFFIX);
+    }
 
     /**
      * Check if the tile entity has a GUI or not
