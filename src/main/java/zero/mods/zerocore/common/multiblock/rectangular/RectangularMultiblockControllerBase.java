@@ -16,8 +16,7 @@ import net.minecraft.world.World;
 import zero.mods.zerocore.common.multiblock.MultiblockControllerBase;
 import zero.mods.zerocore.common.multiblock.MultiblockValidationException;
 
-public abstract class RectangularMultiblockControllerBase extends
-		MultiblockControllerBase {
+public abstract class RectangularMultiblockControllerBase extends MultiblockControllerBase {
 
 	protected RectangularMultiblockControllerBase(World world) {
 		super(world);
