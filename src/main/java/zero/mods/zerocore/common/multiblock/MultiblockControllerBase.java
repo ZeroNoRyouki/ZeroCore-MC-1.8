@@ -184,7 +184,7 @@ public abstract class MultiblockControllerBase {
 				this.minimumCoord = new BlockPos(newX, newY, newZ);
 		}
 
-		if (this.minimumCoord != null) {
+		if (this.maximumCoord != null) {
 
 			curX = this.maximumCoord.getX();
 			curY = this.maximumCoord.getY();
