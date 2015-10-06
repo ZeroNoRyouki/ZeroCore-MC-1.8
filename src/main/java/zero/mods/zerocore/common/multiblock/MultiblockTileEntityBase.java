@@ -191,7 +191,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
 	 * to worry about sending the packet itself.
 	 * Decode this data in decodeDescriptionPacket.
 	 * @param packetData An NBT compound tag into which you should write your custom description data.
-	 * @see erogenousbeef.core.multiblock.MultiblockTileEntityBase#decodeDescriptionPacket(NBTTagCompound)
+	 * @see zero.mods.zerocore.common.multiblock.MultiblockTileEntityBase#decodeDescriptionPacket(NBTTagCompound)
 	 */
 	protected void encodeDescriptionPacket(NBTTagCompound packetData) {
 		if(this.isMultiblockSaveDelegate() && isConnected()) {
@@ -205,7 +205,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
 	 * Override this to easily read in data from a TileEntity's description packet.
 	 * Encoded in encodeDescriptionPacket.
 	 * @param packetData The NBT data from the tile entity's description packet.
-	 * @see erogenousbeef.core.multiblock.MultiblockTileEntityBase#encodeDescriptionPacket(NBTTagCompound)
+	 * @see zero.mods.zerocore.common.multiblock.MultiblockTileEntityBase#encodeDescriptionPacket(NBTTagCompound)
 	 */
 	protected void decodeDescriptionPacket(NBTTagCompound packetData) {
 		if(packetData.hasKey("multiblockData")) {
@@ -261,14 +261,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
 		return controller;
 	}
 
-	/*
-	@Override
-	public BlockPos getWorldLocation() {
-
-		return this.getPos();
-	}
-	*/
-	
 	@Override
 	public void becomeMultiblockSaveDelegate() {
 		this.saveMultiblockData = true;
