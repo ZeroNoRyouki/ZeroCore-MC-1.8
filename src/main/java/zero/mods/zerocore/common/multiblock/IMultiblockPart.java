@@ -12,7 +12,7 @@ package zero.mods.zerocore.common.multiblock;
 
 import java.util.Set;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import zero.mods.zerocore.common.blocks.ModTileEntity;
 
 /**
  * Basic interface for a multiblock machine part. This is defined as an abstract class
@@ -22,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
  * 
  * {@link zero.mods.zerocore.common.multiblock.MultiblockTileEntityBase}
  */
-public abstract class IMultiblockPart extends TileEntity {
+public abstract class IMultiblockPart extends ModTileEntity {
 
 	public static final int INVALID_DISTANCE = Integer.MAX_VALUE;
 	
