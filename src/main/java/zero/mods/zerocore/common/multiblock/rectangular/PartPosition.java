@@ -10,8 +10,11 @@ package zero.mods.zerocore.common.multiblock.rectangular;
  * https://github.com/ZeroNoRyouki/ZeroCore
  */
 
-public enum PartPosition {
-	Unknown,
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.util.IStringSerializable;
+
+public enum PartPosition  implements IStringSerializable {
+
 	Interior,
 	FrameCorner,
 	Frame,
@@ -23,7 +26,9 @@ public enum PartPosition {
 	WestFace;
 	
 	public boolean isFace(PartPosition position) {
+
 		switch(position) {
+
 			case TopFace:
 			case BottomFace:
 			case NorthFace:
@@ -31,8 +36,21 @@ public enum PartPosition {
 			case EastFace:
 			case WestFace:
 				return true;
+
 			default:
 				return false;
 		}
+	}
+
+	public static PropertyEnum createProperty(String name) {
+
+		return PropertyEnum.create(name, PartPosition.class);
+	}
+
+
+	@Override
+	public String getName() {
+
+		return this.toString();
 	}
 }

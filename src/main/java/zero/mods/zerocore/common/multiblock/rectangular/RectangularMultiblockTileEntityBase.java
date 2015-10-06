@@ -25,17 +25,29 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 
 		super();
 		
-		this.position = PartPosition.Unknown;
+		this.position = null; //PartPosition.Unknown;
 		this.outwards = null; // ForgeDirection.UNKNOWN;
 	}
 
 	// Positional Data
-	@Deprecated
+
+	/**
+	 * Get the outward facing of the part in the formed multiblock
+	 *
+	 * @return the outward facing of the part or null if that is unknown. Please note that this differs from the original implementation of the method
+	 */
 	public EnumFacing getOutwardsDir() {
+
 		return this.outwards;
 	}
-	
+
+	/**
+	 * Get the position of the part in the formed multiblock
+	 *
+	 * @return the position of the part or null if that is unknown. Please note that this differs from the original implementation of the method
+	 */
 	public PartPosition getPartPosition() {
+
 		return this.position;
 	}
 
@@ -51,17 +63,14 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	@Override
 	public void onMachineAssembled(MultiblockControllerBase controller) {
 
-		BlockPos maxCoord = controller.getMaximumCoord();
-		BlockPos minCoord = controller.getMinimumCoord();
-		
 		// Discover where I am on the reactor
-		this.recalculateOutwardsDirection(minCoord, maxCoord);
+		this.recalculateOutwardsDirection(controller.getMinimumCoord(), controller.getMaximumCoord());
 	}
 
 	@Override
 	public void onMachineBroken() {
 
-		this.position = PartPosition.Unknown;
+		this.position = null; //PartPosition.Unknown;
 		this.outwards = null;
 	}
 	
@@ -75,7 +84,7 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 		int facesMatching = 0;
 
 		this.outwards = null;
-		this.position = PartPosition.Unknown;
+		this.position = null; //PartPosition.Unknown;
 
 		myX = myPosition.getX();
 		myY = myPosition.getY();
