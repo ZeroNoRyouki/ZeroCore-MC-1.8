@@ -55,7 +55,7 @@ public abstract class ModBlock extends Block implements IModBlock {
 
         super(material);
 
-        this._fqName = ModObjects.formatFullyQualifiedName(ModObjects.getModIdFromActiveModContainer(), name);
+        this._fqName = ModObjects.formatFullyQualifiedName(null, name);
         this.setUnlocalizedName(this._fqName);
 
         // init the block BEFORE registering it
@@ -89,9 +89,18 @@ public abstract class ModBlock extends Block implements IModBlock {
      */
     public void registerBlockTileEntity(Class<? extends TileEntity> tileEntityClass) {
 
-        GameRegistry.registerTileEntity(tileEntityClass, this.getFullyQualifiedName() + ".te");
+        GameRegistry.registerTileEntity(tileEntityClass, ModTileEntity.formatFullyQualifiedName(this.getFullyQualifiedName()));
     }
 
+    /**
+     * Register a tile entity for the block
+     *
+     * @param tileEntityClass the tile entity class to register
+     */
+    public void registerBlockTileEntity(Class<? extends TileEntity> tileEntityClass, int metaData) {
+
+        GameRegistry.registerTileEntity(tileEntityClass, ModTileEntity.formatFullyQualifiedName(this.getFullyQualifiedName(), metaData));
+    }
 
     /**
      * Test if a block in the world is of the given type

@@ -7,9 +7,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import zero.mods.zerocore.client.helpers.Render;
@@ -73,7 +76,7 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
             if ((null == subBlockName) || subBlockName.isEmpty())
                 continue;
 
-            if (-1 == subBlockName.indexOf(':'))
+            if (!ModObjects.isFullyQualifiedName(subBlockName))
                 subBlockName = ModObjects.formatFullyQualifiedName(modId, subBlockName);
 
             modelNames[modelNameIndex++] = subBlockName;
@@ -87,7 +90,7 @@ public abstract class ModBlockWithState extends ModBlock implements IBlockStateA
 
 
     /**
-     * Return the suggested facing for a indirectly block placed in the world (by World.setBlockState for example)
+     * Return the suggested facing for a block indirectly placed in the world (by World.setBlockState for example)
      *
      * @param world the current world
      * @param position position of the block
