@@ -12,6 +12,7 @@ package zero.mods.zerocore.common.multiblock.rectangular;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import zero.mods.zerocore.common.lib.BlockFacings;
 import zero.mods.zerocore.common.multiblock.MultiblockControllerBase;
 import zero.mods.zerocore.common.multiblock.MultiblockTileEntityBase;
 import zero.mods.zerocore.common.multiblock.MultiblockValidationException;
@@ -19,14 +20,12 @@ import zero.mods.zerocore.common.multiblock.MultiblockValidationException;
 public abstract class RectangularMultiblockTileEntityBase extends MultiblockTileEntityBase {
 
 	private PartPosition position;
-	private EnumFacing outwards;
+	private BlockFacings outwardFacings;
 	
 	public RectangularMultiblockTileEntityBase() {
-
-		super();
 		
-		this.position = null; //PartPosition.Unknown;
-		this.outwards = null; // ForgeDirection.UNKNOWN;
+		this.position = PartPosition.Unknown;
+		this.outwardFacings = BlockFacings.NONE;
 	}
 
 	// Positional Data
@@ -34,24 +33,25 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	/**
 	 * Get the outward facing of the part in the formed multiblock
 	 *
-	 * @return the outward facing of the part or null if that is unknown. Please note that this differs from the original implementation of the method
+	 * @return the outward facing of the part. A face is "set" in the BlockFacings object if that face is facing outward
 	 */
-	public EnumFacing getOutwardsDir() {
+	public BlockFacings getOutwardsDir() {
 
-		return this.outwards;
+		return this.outwardFacings;
 	}
 
 	/**
 	 * Get the position of the part in the formed multiblock
 	 *
-	 * @return the position of the part or null if that is unknown. Please note that this differs from the original implementation of the method
+	 * @return the position of the part
 	 */
 	public PartPosition getPartPosition() {
 
 		return this.position;
 	}
 
-	// Handlers from MultiblockTileEntityBase 
+	// Handlers from MultiblockTileEntityBase
+
 	@Override
 	public void onAttached(MultiblockControllerBase newController) {
 
@@ -70,81 +70,83 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	@Override
 	public void onMachineBroken() {
 
-		this.position = null; //PartPosition.Unknown;
-		this.outwards = null;
+		this.position = PartPosition.Unknown;
+		this.outwardFacings = BlockFacings.NONE;
 	}
 	
 	// Positional helpers
+
 	public void recalculateOutwardsDirection(BlockPos minCoord, BlockPos maxCoord) {
 
 		BlockPos myPosition = this.getPos();
-		int myX, myY, myZ;
-		int maxX, maxY, maxZ;
-		int minX, minY, minZ;
+		int myX = myPosition.getX();
+		int myY = myPosition.getY();
+		int myZ = myPosition.getZ();
 		int facesMatching = 0;
 
-		this.outwards = null;
-		this.position = null; //PartPosition.Unknown;
 
-		myX = myPosition.getX();
-		myY = myPosition.getY();
-		myZ = myPosition.getZ();
+		// witch direction are we facing?
 
-		maxX = maxCoord.getX();
-		maxY = maxCoord.getY();
-		maxZ = maxCoord.getZ();
+		boolean downFacing = myY == minCoord.getY();
+		boolean upFacing = myY == maxCoord.getY();
+		boolean northFacing = myZ == minCoord.getZ();
+		boolean southFacing = myZ == maxCoord.getZ();
+		boolean westFacing = myX == minCoord.getX();
+		boolean eastFacing = myX == maxCoord.getX();
 
-		minX = minCoord.getX();
-		minY = minCoord.getY();
-		minZ = minCoord.getZ();
+		this.outwardFacings = BlockFacings.from(downFacing, upFacing, northFacing, southFacing, westFacing, eastFacing);
 
-		if (maxX == myX || minX == myX)
-			facesMatching++;
 
-		if (maxY == myY || minY == myY)
-			facesMatching++;
+		// how many faces are facing outward?
 
-		if (maxZ == myZ || minZ == myZ)
-			facesMatching++;
-		
+		if (eastFacing || westFacing)
+			++facesMatching;
+
+		if (upFacing || downFacing)
+			++facesMatching;
+
+		if (southFacing || northFacing)
+			++facesMatching;
+
+
+		// what is our position in the multiblock structure?
+
 		if (facesMatching <= 0)
 			this.position = PartPosition.Interior;
+
 		else if (facesMatching >= 3)
 			this.position = PartPosition.FrameCorner;
+
 		else if (facesMatching == 2)
 			this.position = PartPosition.Frame;
+
 		else {
 
-			// 1 face matches
-			if (maxX == myX) {
+			// only 1 face matches
 
-				position = PartPosition.EastFace;
-				outwards = EnumFacing.EAST;
+			if (eastFacing) {
 
-			} else if(minX == myX) {
+				this.position = PartPosition.EastFace;
 
-				position = PartPosition.WestFace;
-				outwards = EnumFacing.WEST;
+			} else if (westFacing) {
 
-			} else if(maxZ == myZ) {
+				this.position = PartPosition.WestFace;
 
-				position = PartPosition.SouthFace;
-				outwards = EnumFacing.SOUTH;
+			} else if (southFacing) {
 
-			} else if(minZ == myZ) {
+				this.position = PartPosition.SouthFace;
 
-				position = PartPosition.NorthFace;
-				outwards = EnumFacing.NORTH;
+			} else if (northFacing) {
 
-			} else if(maxY == myY) {
+				this.position = PartPosition.NorthFace;
 
-				position = PartPosition.TopFace;
-				outwards = EnumFacing.UP;
+			} else if (upFacing) {
+
+				this.position = PartPosition.TopFace;
 
 			} else {
 
-				position = PartPosition.BottomFace;
-				outwards = EnumFacing.DOWN;
+				this.position = PartPosition.BottomFace;
 			}
 		}
 	}

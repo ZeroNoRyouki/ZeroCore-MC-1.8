@@ -15,6 +15,7 @@ import net.minecraft.util.IStringSerializable;
 
 public enum PartPosition  implements IStringSerializable {
 
+	Unknown,
 	Interior,
 	FrameCorner,
 	Frame,
