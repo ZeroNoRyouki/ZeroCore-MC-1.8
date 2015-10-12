@@ -2,6 +2,7 @@ package zero.mods.zerocore.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +20,13 @@ import zero.mods.zerocore.common.helpers.ModObjects;
  * A base class for all blocks of a mod
  */
 public abstract class ModBlock extends Block implements IModBlock {
+
+    /**
+     * Common block-state properties
+     */
+    public static final PropertyDirection HFACING = PropertyDirection.create("hfacing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyDirection VFACING = PropertyDirection.create("vfacing", EnumFacing.Plane.VERTICAL);
+
 
     /**
      * Constructor
