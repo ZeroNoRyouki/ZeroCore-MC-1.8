@@ -1,5 +1,7 @@
 package zero.mods.zerocore.common.lib;
 
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import java.util.HashMap;
 
@@ -21,6 +23,13 @@ public class BlockFacings {
     public static final BlockFacings SOUTH;
     public static final BlockFacings WEST;
     public static final BlockFacings EAST;
+
+    public static final PropertyBool FACING_DOWN = PropertyBool.create("downFacing");
+    public static final PropertyBool FACING_UP = PropertyBool.create("upFacing");
+    public static final PropertyBool FACING_WEST = PropertyBool.create("westFacing");
+    public static final PropertyBool FACING_EAST = PropertyBool.create("eastFacing");
+    public static final PropertyBool FACING_NORTH = PropertyBool.create("northFacing");
+    public static final PropertyBool FACING_SOUTH = PropertyBool.create("southFacing");
 
     /**
      * Check if a specific face is "set"
@@ -62,6 +71,16 @@ public class BlockFacings {
 
     public boolean east() {
         return this.isSet(EnumFacing.EAST);
+    }
+
+    public IBlockState toBlockState(IBlockState state) {
+
+        return state.withProperty(FACING_DOWN, this.isSet(EnumFacing.DOWN))
+                .withProperty(FACING_UP, this.isSet(EnumFacing.UP))
+                .withProperty(FACING_WEST, this.isSet(EnumFacing.WEST))
+                .withProperty(FACING_EAST, this.isSet(EnumFacing.EAST))
+                .withProperty(FACING_NORTH, this.isSet(EnumFacing.NORTH))
+                .withProperty(FACING_SOUTH, this.isSet(EnumFacing.SOUTH));
     }
 
     /**
