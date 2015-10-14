@@ -102,6 +102,23 @@ public class BlockFacings {
         return BlockFacings.from(Byte.valueOf(newHash));
     }
 
+
+    public int countFacesIf(boolean areSet) {
+
+        int checkFor = areSet ? 1 : 0;
+        int mask = this._value;
+        int faces = 0;
+
+        for (int i = 0; i < 6; ++i, mask = mask >>> 1) {
+
+            if ((mask & 1) == checkFor)
+                ++faces;
+        }
+
+        return faces;
+    }
+
+
     /**
      * Return a BlockFacing object that describe the passed in state
      * @param down the state of the "down" face
