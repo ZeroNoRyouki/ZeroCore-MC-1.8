@@ -26,9 +26,9 @@ public enum PartPosition  implements IStringSerializable {
 	EastFace,
 	WestFace;
 	
-	public boolean isFace(PartPosition position) {
+	public boolean isFace() {
 
-		switch(position) {
+		switch(this) {
 
 			case TopFace:
 			case BottomFace:
