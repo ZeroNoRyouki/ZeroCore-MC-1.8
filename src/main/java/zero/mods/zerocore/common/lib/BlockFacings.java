@@ -13,7 +13,7 @@ import java.util.HashMap;
  * - track which faces is connected to a face of a similar block
  *
  */
-public class BlockFacings {
+public final class BlockFacings {
 
     public static final BlockFacings NONE;
     public static final BlockFacings ALL;
@@ -102,7 +102,12 @@ public class BlockFacings {
         return BlockFacings.from(Byte.valueOf(newHash));
     }
 
-
+    /**
+     * Count the number of faces that are in the required state
+     *
+     * @param areSet specify if you are looking for "set" faces (true) or not (false)
+     * @return the number of faces found in the required state
+     */
     public int countFacesIf(boolean areSet) {
 
         int checkFor = areSet ? 1 : 0;
@@ -116,6 +121,22 @@ public class BlockFacings {
         }
 
         return faces;
+    }
+
+    /**
+     * Return a PropertyBlockFacings for the current facing
+     *
+     * @return a PropertyBlockFacings value
+     */
+    public PropertyBlockFacings toProperty() {
+
+        PropertyBlockFacings[] values = PropertyBlockFacings.values();
+
+        for (int i = 0; i < values.length; ++i)
+            if (values[i]._hash == this._value)
+                return values[i];
+
+        return PropertyBlockFacings.None;
     }
 
 
@@ -134,7 +155,7 @@ public class BlockFacings {
         return BlockFacings.from(BlockFacings.computeHash(down, up, north, south, west, east));
     }
 
-    private static BlockFacings from(Byte hash) {
+    static BlockFacings from(Byte hash) {
 
         BlockFacings facings = BlockFacings.s_cache.get(hash);
 
@@ -152,7 +173,7 @@ public class BlockFacings {
         this._value = value;
     }
 
-    private static Byte computeHash(boolean down, boolean up, boolean north, boolean south, boolean west, boolean east) {
+    static Byte computeHash(boolean down, boolean up, boolean north, boolean south, boolean west, boolean east) {
 
         byte hash = 0;
 
@@ -211,7 +232,6 @@ public class BlockFacings {
 
         hash = BlockFacings.computeHash(false, false, false, false, false, true);
         s_cache.put(hash, EAST = new BlockFacings(hash.byteValue()));
-
     }
 
 }
