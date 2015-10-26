@@ -313,12 +313,12 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
 
 		BlockPos myPosition = this.getPos();
 		BlockPos[] neighbors = new BlockPos[] {
-				myPosition.east(),
+				myPosition.west(),
 				myPosition.down(),
-				myPosition.south(),
 				myPosition.north(),
+				myPosition.south(),
 				myPosition.up(),
-				myPosition.west()
+				myPosition.east()
 		};
 		/*
 		CoordTriplet[] neighbors = new CoordTriplet[] {
