@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import zero.mods.zerocore.common.IModAccessor;
+import zero.mods.zerocore.common.helpers.CodeHelper;
 import zero.mods.zerocore.common.helpers.ModObjects;
 
 /**
@@ -100,4 +101,13 @@ public abstract class ModTileEntity extends TileEntity implements IModAccessor {
         return null;
     }
 
+    public boolean calledByLogicalServer() {
+
+        return CodeHelper.calledByLogicalServer(this.worldObj);
+    }
+
+    public boolean calledByLogicalClient() {
+
+        return CodeHelper.calledByLogicalClient(this.worldObj);
+    }
 }
