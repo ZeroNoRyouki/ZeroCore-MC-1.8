@@ -194,6 +194,16 @@ public final class CodeHelper {
     }
 
 
+    public static double smallGauss(Random rand, double d) {
+
+        return (rand.nextFloat() - 0.5D) * d;
+    }
+
+    public static double gaussian(Random rand, double d) {
+
+        return d + d * ((rand.nextFloat() - 0.5D) / 4);
+    }
+
 
     public static final int[] EMPTY_INT_ARRAY = new int[0];
 
